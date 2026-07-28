@@ -60,6 +60,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # --- Database: PostgreSQL ---
 DATABASES = {
     'default': {
+        
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
@@ -67,6 +68,7 @@ DATABASES = {
         'HOST': config('DB_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='5432'),
         'CONN_MAX_AGE': 60,
+        
     }
 }
 
