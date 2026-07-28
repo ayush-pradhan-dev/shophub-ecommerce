@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} — ShopHub{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+        {% with primary_image=product.images.all|first %}
+            {% if primary_image %}
+                <img src="{{ primary_image.image.url }}" alt="{{ product.name }}" class="w-full rounded-lg shadow">
+            {% else %}
+                <div class="w-full aspect-square bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">No Image</div>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div>
+        <p class="text-sm text-gray-500">{{ product.category.name }}</p>
+        <h1 class="text-3xl font-bold mt-1">{{ product.name }}</h1>
+        <div class="flex items-center gap-3 mt-4">
+            <span class="text-2xl font-bold text-indigo-600">${{ product.current_price }}</span>
+            {% if product.discount_price %}
+                <span class="text-lg text-gray-400 line-through">${{ product.price }}</span>
+            {% endif %}
+        </div>
+        <p class="text-gray-700 mt-4">{{ product.description }}</p>
+        <p class="text-sm text-gray-500 mt-4">Sold by {{ product.seller.store_name|default:product.seller.username }}</p>
+    </div>
+</div>
+<form data-add-to-cart="{{ product.id }}" class="mt-6">
+    <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="w-16 border rounded px-2 py-1 mr-2">
+    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700" {% if not product.in_stock %}disabled{% endif %}>
+        {% if product.in_stock %}Add to Cart{% else %}Out of Stock{% endif %}
+    </button>
+</form>
+
+<script>
+document.querySelector('[data-add-to-cart]')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const productId = form.dataset.addToCart;
+    const quantity = form.quantity.value;
+    const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1];
+
+    const response = await fetch(`/orders/cart/add/${productId}/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `quantity=${quantity}`,
+    });
+    const data = await response.json();
+    if (data.success) {
+        alert(`Added to cart! (${data.cart_count} items total)`);
+    } else {
+        alert(data.error);
+    }
+});
+</script>
+{% endblock %}

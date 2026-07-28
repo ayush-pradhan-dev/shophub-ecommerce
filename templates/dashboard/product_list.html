@@ -1,0 +1,47 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}My Products — ShopHub{% endblock %}
+
+{% block dashboard_content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">My Products</h1>
+    <a href="{% url 'dashboard:product_create' %}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+        + Add Product
+    </a>
+</div>
+
+<div class="bg-white rounded-lg shadow overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-left">
+            <tr>
+                <th class="p-3">Name</th>
+                <th class="p-3">Price</th>
+                <th class="p-3">Stock</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y">
+            {% for product in products %}
+            <tr>
+                <td class="p-3">{{ product.name }}</td>
+                <td class="p-3">${{ product.current_price }}</td>
+                <td class="p-3">{{ product.stock }}</td>
+                <td class="p-3">
+                    {% if product.is_active %}
+                        <span class="text-green-600">Active</span>
+                    {% else %}
+                        <span class="text-gray-400">Inactive</span>
+                    {% endif %}
+                </td>
+                <td class="p-3 space-x-2">
+                    <a href="{% url 'dashboard:product_update' product.pk %}" class="text-indigo-600 hover:underline">Edit</a>
+                    <a href="{% url 'dashboard:product_delete' product.pk %}" class="text-red-500 hover:underline">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="p-6 text-center text-gray-500">No products yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

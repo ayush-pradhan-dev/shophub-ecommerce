@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Checkout — ShopHub{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Checkout</h1>
+
+{% if error %}
+<div class="bg-red-50 text-red-600 p-3 rounded mb-4">{{ error }}</div>
+{% endif %}
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <form method="POST" class="lg:col-span-2 bg-white rounded-lg shadow p-6 space-y-4">
+        {% csrf_token %}
+        <h2 class="font-semibold text-lg mb-2">Shipping Details</h2>
+        <input name="full_name" placeholder="Full Name" required class="w-full border rounded px-3 py-2">
+        <input name="phone_number" placeholder="Phone Number" required class="w-full border rounded px-3 py-2">
+        <input name="address_line1" placeholder="Address Line 1" required class="w-full border rounded px-3 py-2">
+        <input name="address_line2" placeholder="Address Line 2 (optional)" class="w-full border rounded px-3 py-2">
+        <div class="grid grid-cols-2 gap-4">
+            <input name="city" placeholder="City" required class="border rounded px-3 py-2">
+            <input name="state" placeholder="State" required class="border rounded px-3 py-2">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <input name="postal_code" placeholder="Postal Code" required class="border rounded px-3 py-2">
+            <input name="country" placeholder="Country" value="India" required class="border rounded px-3 py-2">
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded hover:bg-indigo-700 font-medium">
+            Place Order
+        </button>
+    </form>
+
+    <div class="bg-white rounded-lg shadow p-6 h-fit">
+        <h2 class="font-semibold text-lg mb-4">Order Summary</h2>
+        {% for item in items %}
+        <div class="flex justify-between text-sm mb-2">
+            <span>{{ item.quantity }} × {{ item.product.name }}</span>
+            <span>${{ item.line_total }}</span>
+        </div>
+        {% endfor %}
+        <div class="border-t pt-3 mt-3 flex justify-between font-bold">
+            <span>Total</span>
+            <span>${{ cart.subtotal }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

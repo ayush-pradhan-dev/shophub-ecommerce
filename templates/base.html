@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShopHub{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/[email protected]/dist/tailwind.min.css">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="{% url 'store:home' %}" class="text-2xl font-bold text-indigo-600">ShopHub</a>
+                <div class="flex items-center gap-4">
+                   {% if user.is_authenticated %}
+                     <span class="text-sm text-gray-600">Hi, {{ user.username }}</span>
+                        {% if user.can_sell %}
+                            <a href="{% url 'dashboard:home' %}" class="text-sm text-indigo-600 hover:underline">Seller Dashboard</a>
+                    {% endif %}
+                <a href="{% url 'orders:cart_detail' %}" class="text-sm text-gray-600 hover:text-indigo-600">Cart</a>
+                <form method="POST" action="{% url 'users:logout' %}" class="inline">
+    {% csrf_token %}
+    <button type="submit" class="text-sm text-gray-600 hover:text-indigo-600">Logout</button>
+</form>
+            {%else %}
+                <a href="{% url 'users:login' %}" class="text-sm text-gray-600 hover:text-indigo-600">Login</a>
+            {% endif %}
+        </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+<body class="bg-gray-50 text-gray-900">
+    {% csrf_token %}
+</html>

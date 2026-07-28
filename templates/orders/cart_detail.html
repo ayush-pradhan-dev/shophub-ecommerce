@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Your Cart — ShopHub{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Your Cart</h1>
+
+<div id="cart-container">
+    {% include 'orders/partials/cart_items.html' %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function getCsrfToken() {
+    return document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1];
+}
+
+document.addEventListener('click', async (e) => {
+    const removeBtn = e.target.closest('[data-remove-item]');
+    if (removeBtn) {
+        const itemId = removeBtn.dataset.removeItem;
+        await fetch(`/orders/cart/remove/${itemId}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCsrfToken() },
+        });
+        location.reload();
+    }
+});
+
+document.addEventListener('change', async (e) => {
+    if (e.target.matches('[data-quantity-input]')) {
+        const itemId = e.target.dataset.quantityInput;
+        const quantity = e.target.value;
+        await fetch(`/orders/cart/update/${itemId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `quantity=${quantity}`,
+        });
+        location.reload();
+    }
+});
+</script>
+{% endblock %}

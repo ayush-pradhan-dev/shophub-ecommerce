@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Order Confirmed — ShopHub{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto text-center bg-white rounded-lg shadow p-8">
+    <h1 class="text-2xl font-bold text-green-600 mb-2">Order Confirmed!</h1>
+    <p class="text-gray-600 mb-4">Thank you, {{ order.full_name }}. Your order #{{ order.pk }} has been placed.</p>
+    <p class="font-semibold text-lg">Total: ${{ order.total_amount }}</p>
+    <a href="{% url 'store:home' %}" class="inline-block mt-6 text-indigo-600 hover:underline">Continue Shopping</a>
+</div>
+{% endblock %}

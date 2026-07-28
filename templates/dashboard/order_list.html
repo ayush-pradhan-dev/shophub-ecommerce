@@ -1,0 +1,33 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}My Orders — ShopHub{% endblock %}
+
+{% block dashboard_content %}
+<h1 class="text-2xl font-bold mb-6">My Orders</h1>
+
+<div class="bg-white rounded-lg shadow overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-left">
+            <tr>
+                <th class="p-3">Order</th>
+                <th class="p-3">Customer</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Date</th>
+                <th class="p-3"></th>
+            </tr>
+        </thead>
+        <tbody class="divide-y">
+            {% for order in orders %}
+            <tr>
+                <td class="p-3">#{{ order.id }}</td>
+                <td class="p-3">{{ order.full_name }}</td>
+                <td class="p-3">{{ order.get_status_display }}</td>
+                <td class="p-3">{{ order.created_at|date:"M d, Y" }}</td>
+                <td class="p-3"><a href="{% url 'dashboard:order_detail' order.id %}" class="text-indigo-600 hover:underline">View</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="p-6 text-center text-gray-500">No orders yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

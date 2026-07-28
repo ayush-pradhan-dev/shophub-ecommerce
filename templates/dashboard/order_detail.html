@@ -1,0 +1,30 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}Order #{{ order.id }} — ShopHub{% endblock %}
+
+{% block dashboard_content %}
+<h1 class="text-2xl font-bold mb-2">Order #{{ order.id }}</h1>
+<p class="text-gray-600 mb-6">{{ order.full_name }} — {{ order.address_line1 }}, {{ order.city }}, {{ order.state }} {{ order.postal_code }}</p>
+
+<div class="bg-white rounded-lg shadow p-6 mb-6">
+    <h2 class="font-semibold mb-3">Your Items in This Order</h2>
+    {% for item in seller_items %}
+    <div class="flex justify-between text-sm mb-2">
+        <span>{{ item.quantity }} × {{ item.product_name }}</span>
+        <span>${{ item.line_total }}</span>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="bg-white rounded-lg shadow p-6">
+    <h2 class="font-semibold mb-3">Update Status</h2>
+    <form method="POST" class="flex gap-3">
+        {% csrf_token %}
+        <select name="status" class="border rounded px-3 py-2">
+            {% for value, label in order.Status.choices %}
+                <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Update</button>
+    </form>
+</div>
+{% endblock %}

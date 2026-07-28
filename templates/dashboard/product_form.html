@@ -1,0 +1,23 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}{% if object %}Edit{% else %}Add{% endif %} Product — ShopHub{% endblock %}
+
+{% block dashboard_content %}
+<h1 class="text-2xl font-bold mb-6">{% if object %}Edit{% else %}Add{% endif %} Product</h1>
+
+<form method="POST" enctype="multipart/form-data" class="bg-white rounded-lg shadow p-6 space-y-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <h3 class="font-semibold pt-4 border-t">Product Images</h3>
+    {{ formset.management_form }}
+    {% for image_form in formset %}
+        <div class="border rounded p-3">
+            {{ image_form.as_p }}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
+        Save Product
+    </button>
+</form>
+{% endblock %}

@@ -1,0 +1,47 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for product in page_obj %}
+    <a href="{% url 'store:product_detail' product.slug %}" class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden group">
+        <div class="aspect-square bg-gray-100 overflow-hidden">
+            {% with primary_image=product.images.all|first %}
+                {% if primary_image %}
+                    <img src="{{ primary_image.image.url }}" alt="{{ primary_image.alt_text|default:product.name }}"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">No Image</div>
+                {% endif %}
+            {% endwith %}
+        </div>
+        <div class="p-4">
+            <p class="text-xs text-gray-500 mb-1">{{ product.category.name }}</p>
+            <h3 class="font-medium text-gray-900 truncate">{{ product.name }}</h3>
+            <div class="flex items-center gap-2 mt-2">
+                <span class="text-lg font-bold text-indigo-600">${{ product.current_price }}</span>
+                {% if product.discount_price %}
+                    <span class="text-sm text-gray-400 line-through">${{ product.price }}</span>
+                    <span class="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded">-{{ product.discount_percentage }}%</span>
+                {% endif %}
+            </div>
+            {% if not product.in_stock %}
+                <p class="text-xs text-red-500 mt-1">Out of stock</p>
+            {% elif product.is_low_stock %}
+                <p class="text-xs text-orange-500 mt-1">Only {{ product.stock }} left</p>
+            {% endif %}
+        </div>
+    </a>
+    {% empty %}
+    <p class="col-span-full text-center text-gray-500 py-12">No products found matching your filters.</p>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="flex justify-center gap-2 mt-8">
+    {% if page_obj.has_previous %}
+        <button data-page="{{ page_obj.previous_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-100">&larr; Prev</button>
+    {% endif %}
+    <span class="px-3 py-1 text-sm text-gray-600">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <button data-page="{{ page_obj.next_page_number }}" class="px-3 py-1 border rounded hover:bg-gray-100">Next &rarr;</button>
+    {% endif %}
+</div>
+{% endif %}

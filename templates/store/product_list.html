@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}Shop All Products — ShopHub{% endblock %}
+
+{% block content %}
+<div class="flex flex-col lg:flex-row gap-8">
+
+    <!-- Sidebar filters -->
+    <aside class="lg:w-64 flex-shrink-0">
+        <div class="bg-white rounded-lg shadow p-4 sticky top-20">
+            <h3 class="font-semibold mb-3">Search</h3>
+            <input type="text" id="search-input" placeholder="Search products..."
+                   value="{{ current_search }}"
+                   class="w-full border rounded px-3 py-2 text-sm mb-6 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+            <h3 class="font-semibold mb-3">Categories</h3>
+            <ul class="space-y-1 text-sm mb-6" id="category-filter">
+                <li>
+                    <button data-category="" class="category-btn w-full text-left px-2 py-1 rounded hover:bg-indigo-50 {% if not current_category %}bg-indigo-100 font-medium{% endif %}">
+                        All Categories
+                    </button>
+                </li>
+                {% for cat in categories %}
+                <li>
+                    <button data-category="{{ cat.slug }}" class="category-btn w-full text-left px-2 py-1 rounded hover:bg-indigo-50 {% if current_category == cat.slug %}bg-indigo-100 font-medium{% endif %}">
+                        {{ cat.name }}
+                    </button>
+                    {% for sub in cat.subcategories.all %}
+                    <button data-category="{{ sub.slug }}" class="category-btn w-full text-left px-2 py-1 pl-5 rounded hover:bg-indigo-50 text-gray-600 {% if current_category == sub.slug %}bg-indigo-100 font-medium{% endif %}">
+                        └ {{ sub.name }}
+                    </button>
+                    {% endfor %}
+                </li>
+                {% endfor %}
+            </ul>
+
+            <h3 class="font-semibold mb-3">Price Range</h3>
+            <div class="flex gap-2 mb-6">
+                <input type="number" id="min-price" placeholder="Min" class="w-1/2 border rounded px-2 py-1 text-sm">
+                <input type="number" id="max-price" placeholder="Max" class="w-1/2 border rounded px-2 py-1 text-sm">
+            </div>
+
+            <h3 class="font-semibold mb-3">Sort By</h3>
+            <select id="sort-select" class="w-full border rounded px-2 py-2 text-sm">
+                <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest</option>
+                <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Name: A-Z</option>
+            </select>
+        </div>
+    </aside>
+
+    <!-- Product grid -->
+    <div class="flex-1">
+        <div class="flex justify-between items-center mb-4">
+            <p id="result-count" class="text-sm text-gray-600">{{ page_obj.paginator.count }} products found</p>
+        </div>
+        <div id="product-grid-container">
+            {% include 'store/partials/product_grid.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const gridContainer = document.getElementById('product-grid-container');
+const resultCount = document.getElementById('result-count');
+const searchInput = document.getElementById('search-input');
+const minPrice = document.getElementById('min-price');
+const maxPrice = document.getElementById('max-price');
+const sortSelect = document.getElementById('sort-select');
+let currentCategory = "{{ current_category }}";
+let debounceTimer;
+
+function buildQueryString(page = 1) {
+    const params = new URLSearchParams();
+    if (searchInput.value.trim()) params.set('q', searchInput.value.trim());
+    if (currentCategory) params.set('category', currentCategory);
+    if (minPrice.value) params.set('min_price', minPrice.value);
+    if (maxPrice.value) params.set('max_price', maxPrice.value);
+    params.set('sort', sortSelect.value);
+    params.set('page', page);
+    return params.toString();
+}
+
+async function fetchProducts(page = 1) {
+    gridContainer.classList.add('opacity-50');
+    try {
+        const response = await fetch(`{% url 'store:product_filter_ajax' %}?${buildQueryString(page)}`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        gridContainer.innerHTML = data.html;
+        resultCount.textContent = `${data.count} products found`;
+    } catch (err) {
+        gridContainer.innerHTML = '<p class="text-red-600">Failed to load products. Please try again.</p>';
+    } finally {
+        gridContainer.classList.remove('opacity-50');
+    }
+}
+
+// Debounced search — avoids firing a request on every keystroke
+searchInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => fetchProducts(1), 400);
+});
+
+[minPrice, maxPrice].forEach(input => {
+    input.addEventListener('change', () => fetchProducts(1));
+});
+
+sortSelect.addEventListener('change', () => fetchProducts(1));
+
+document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        currentCategory = btn.dataset.category;
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('bg-indigo-100', 'font-medium'));
+        btn.classList.add('bg-indigo-100', 'font-medium');
+        fetchProducts(1);
+    });
+});
+
+// Event delegation for pagination buttons (they're re-rendered on every fetch,
+// so we can't attach listeners directly to them)
+gridContainer.addEventListener('click', (e) => {
+    const pageBtn = e.target.closest('[data-page]');
+    if (pageBtn) {
+        fetchProducts(pageBtn.dataset.page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+});
+</script>
+{% endblock %}
