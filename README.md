@@ -2,6 +2,9 @@
 
 A full-stack e-commerce application built with Django and PostgreSQL, featuring a customer storefront, guest/authenticated shopping cart with automatic merging, and a role-based seller dashboard for inventory and order management.
 
+## Live Demo
+🔗 [shophub-c6fm.onrender.com](https://shophub-c6fm.onrender.com)
+
 ## Features
 
 - **Custom User model** with role-based access control (Customer / Seller / Admin)
