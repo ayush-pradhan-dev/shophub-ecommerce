@@ -1,0 +1,161 @@
+[
+{
+  "model": "store.category",
+  "pk": 1,
+  "fields": {
+    "name": "Electronics",
+    "slug": "electronics",
+    "parent": null,
+    "description": "",
+    "image": "",
+    "is_active": true,
+    "created_at": "2026-07-27T20:22:43.827Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 2,
+  "fields": {
+    "name": "Laptops",
+    "slug": "laptops",
+    "parent": 1,
+    "description": "",
+    "image": "",
+    "is_active": true,
+    "created_at": "2026-07-27T20:23:04.556Z"
+  }
+},
+{
+  "model": "store.category",
+  "pk": 3,
+  "fields": {
+    "name": "Wireless Mouse",
+    "slug": "wireless-mouse",
+    "parent": 2,
+    "description": "",
+    "image": "",
+    "is_active": true,
+    "created_at": "2026-07-27T20:24:54.795Z"
+  }
+},
+{
+  "model": "store.product",
+  "pk": 1,
+  "fields": {
+    "seller": 1,
+    "category": 2,
+    "name": "Wireless Mouse",
+    "slug": "wireless-mouse",
+    "description": "Ergonomic wireless mouse with USB receiver",
+    "price": "29.99",
+    "discount_price": "19.99",
+    "stock": 8,
+    "sku": "WM-001",
+    "is_active": true,
+    "created_at": "2026-07-27T20:48:39.820Z",
+    "updated_at": "2026-07-28T19:58:06.157Z"
+  }
+},
+{
+  "model": "store.product",
+  "pk": 2,
+  "fields": {
+    "seller": 1,
+    "category": 1,
+    "name": "CPU",
+    "slug": "cpu",
+    "description": "The Intel Core i9-13900K is engineered for creators, gamers, and power users who demand uncompromising performance. Built on Intel's advanced hybrid architecture, it combines blazing-fast Performance-cores (P-cores) with highly efficient E-cores to deliver exceptional multitasking, faster load times, and smoother gameplay.",
+    "price": "35.00",
+    "discount_price": "33.00",
+    "stock": 10,
+    "sku": "WM-0001",
+    "is_active": true,
+    "created_at": "2026-07-28T19:45:33.851Z",
+    "updated_at": "2026-07-28T19:45:33.851Z"
+  }
+},
+{
+  "model": "store.product",
+  "pk": 3,
+  "fields": {
+    "seller": 1,
+    "category": 1,
+    "name": "Iphone Xs",
+    "slug": "iphone-xs",
+    "description": "The iPhone XS is a premium 5.8-inch Apple smartphone featuring a Super Retina OLED display, A12 Bionic chip, dual 12MP cameras, Face ID, and advanced iOS support.",
+    "price": "89.00",
+    "discount_price": "86.00",
+    "stock": 10,
+    "sku": "WM-0002",
+    "is_active": true,
+    "created_at": "2026-07-28T19:48:49.311Z",
+    "updated_at": "2026-07-28T19:50:11.047Z"
+  }
+},
+{
+  "model": "store.product",
+  "pk": 4,
+  "fields": {
+    "seller": 1,
+    "category": 1,
+    "name": "Macbook pro",
+    "slug": "macbook-pro",
+    "description": "The MacBook Pro is Apple's high-end laptop line, known for its powerful performance, sleek design, and advanced features, catering to professionals and creatives alike",
+    "price": "500.00",
+    "discount_price": "499.00",
+    "stock": 4,
+    "sku": "WM-0003",
+    "is_active": true,
+    "created_at": "2026-07-28T19:54:33.539Z",
+    "updated_at": "2026-07-28T19:58:06.165Z"
+  }
+},
+{
+  "model": "store.productimage",
+  "pk": 1,
+  "fields": {
+    "product": 2,
+    "image": "products/cpu/cpu.jpg",
+    "alt_text": "Intel Core i9-13900K",
+    "is_primary": false,
+    "order": 0,
+    "uploaded_at": "2026-07-28T19:45:33.895Z"
+  }
+},
+{
+  "model": "store.productimage",
+  "pk": 2,
+  "fields": {
+    "product": 1,
+    "image": "products/wireless-mouse/mouse.jpg",
+    "alt_text": "Arctic fox M-012",
+    "is_primary": false,
+    "order": 0,
+    "uploaded_at": "2026-07-28T19:47:19.991Z"
+  }
+},
+{
+  "model": "store.productimage",
+  "pk": 3,
+  "fields": {
+    "product": 3,
+    "image": "products/iphone-xs/iphonexs.jpg",
+    "alt_text": "Iphone XS",
+    "is_primary": false,
+    "order": 0,
+    "uploaded_at": "2026-07-28T19:50:11.061Z"
+  }
+},
+{
+  "model": "store.productimage",
+  "pk": 4,
+  "fields": {
+    "product": 4,
+    "image": "products/macbook-pro/Macbook.webp",
+    "alt_text": "Macbook pro",
+    "is_primary": false,
+    "order": 0,
+    "uploaded_at": "2026-07-28T19:54:33.549Z"
+  }
+}
+]
